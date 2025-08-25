@@ -1,0 +1,6 @@
+{
+    "/api/users": "http://localhost:5001",
+    "/api/orders": "http://localhost:5002",
+    "/api/products": "http://localhost:5003",
+    "/api/auth": "http://localhost:5004"
+  }
