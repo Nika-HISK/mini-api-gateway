@@ -61,7 +61,7 @@ Client → API Gateway → Backend Services
 
 1. **Clone or download the project**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Nika-HISK/mini-api-gateway
    cd mini-api-gateway
    ```
 
