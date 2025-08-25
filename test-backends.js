@@ -1,6 +1,5 @@
 const express = require('express');
 
-// Mock Users Service (Port 5001)
 const usersApp = express();
 usersApp.use(express.json());
 
@@ -47,7 +46,6 @@ usersApp.post('/', (req, res) => {
   });
 });
 
-// Mock Orders Service (Port 5002)
 const ordersApp = express();
 ordersApp.use(express.json());
 
@@ -96,7 +94,6 @@ ordersApp.post('/', (req, res) => {
   });
 });
 
-// Mock Products Service (Port 5003)
 const productsApp = express();
 productsApp.use(express.json());
 
@@ -130,7 +127,6 @@ productsApp.get('/:id', (req, res) => {
   });
 });
 
-// Mock Auth Service (Port 5004)
 const authApp = express();
 authApp.use(express.json());
 
@@ -175,7 +171,6 @@ authApp.post('/verify', (req, res) => {
   }
 });
 
-// Start all mock services
 const servers = [
   { app: usersApp, port: 5001, name: 'Users' },
   { app: ordersApp, port: 5002, name: 'Orders' },
