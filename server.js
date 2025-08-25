@@ -7,11 +7,9 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Storage for rate limiting and caching
 const rateLimitStore = new Map();
 const cacheStore = new Map();
 
-// Load route configuration
 let config;
 try {
   const configPath = path.join(__dirname, 'config.json');
@@ -22,13 +20,11 @@ try {
   process.exit(1);
 }
 
-// HTTP request logging
 app.use(morgan('combined'));
 
-// JSON parsing middleware
 app.use(express.json());
 
-// API key authentication middleware
+
 function authenticateApiKey(req, res, next) {
   const apiKey = req.headers['x-api-key'];
   const validApiKey = process.env.API_KEY || 'gateway-secret-key';
@@ -48,14 +44,13 @@ function authenticateApiKey(req, res, next) {
   next();
 }
 
-// Rate limiting middleware
+
 function rateLimiter(req, res, next) {
   const clientIp = req.ip || req.connection.remoteAddress;
   const now = Date.now();
-  const windowMs = 60 * 1000; // 1 minute window
+  const windowMs = 60 * 1000;
   const maxRequests = 10;
   
-  // Clean expired entries
   for (const [ip, data] of rateLimitStore.entries()) {
     if (now - data.windowStart > windowMs) {
       rateLimitStore.delete(ip);
@@ -77,7 +72,6 @@ function rateLimiter(req, res, next) {
     });
   }
   
-  // Set rate limit headers
   res.set({
     'X-RateLimit-Limit': maxRequests,
     'X-RateLimit-Remaining': Math.max(0, maxRequests - ipData.count),
@@ -87,7 +81,6 @@ function rateLimiter(req, res, next) {
   next();
 }
 
-// Caching middleware for GET requests
 function cacheMiddleware(req, res, next) {
   if (req.method !== 'GET') {
     return next();
@@ -112,7 +105,6 @@ function cacheMiddleware(req, res, next) {
         timestamp: Date.now()
       });
       
-      // Basic cache cleanup
       if (cacheStore.size > 100) {
         const oldestKeys = Array.from(cacheStore.keys()).slice(0, 10);
         oldestKeys.forEach(key => cacheStore.delete(key));
@@ -124,18 +116,15 @@ function cacheMiddleware(req, res, next) {
   next();
 }
 
-// Request timing
 app.use((req, res, next) => {
   req.startTime = Date.now();
   next();
 });
 
-// Apply middleware stack
 app.use(authenticateApiKey);
 app.use(rateLimiter);
 app.use(cacheMiddleware);
 
-// Health check endpoint
 app.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
@@ -145,7 +134,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Stats endpoint
 app.get('/gateway/stats', (req, res) => {
   res.json({
     activeConnections: rateLimitStore.size,
@@ -155,7 +143,6 @@ app.get('/gateway/stats', (req, res) => {
   });
 });
 
-// Configure proxy middleware
 const proxyOptions = {
   router: (req) => {
     for (const [route, target] of Object.entries(config)) {
@@ -197,12 +184,10 @@ const proxyOptions = {
     
     proxyReq.path = newPath + (req.url.includes('?') ? '?' + req.url.split('?')[1] : '');
     
-    // Forward original API key
     if (req.headers['x-api-key']) {
       proxyReq.setHeader('x-forwarded-api-key', req.headers['x-api-key']);
     }
     
-    // Add forwarding headers
     proxyReq.setHeader('x-forwarded-by', 'mini-api-gateway');
     proxyReq.setHeader('x-forwarded-for', req.ip);
   },
@@ -216,13 +201,11 @@ const proxyOptions = {
 
 const proxy = createProxyMiddleware(proxyOptions);
 
-// Setup proxy routes
 Object.keys(config).forEach(route => {
   console.log(`Setting up proxy route: ${route}`);
   app.use(route, proxy);
 });
 
-// Error handler
 app.use((error, req, res, next) => {
   console.error('Error:', error);
   
@@ -241,7 +224,6 @@ app.use((error, req, res, next) => {
   });
 });
 
-// 404 handler
 app.use('*', (req, res) => {
   res.status(404).json({
     error: 'Route not found',
@@ -251,7 +233,6 @@ app.use('*', (req, res) => {
   });
 });
 
-// Graceful shutdown
 function gracefulShutdown() {
   console.log('Shutting down gracefully...');
   server.close(() => {
@@ -263,7 +244,6 @@ function gracefulShutdown() {
 process.on('SIGTERM', gracefulShutdown);
 process.on('SIGINT', gracefulShutdown);
 
-// Start server
 const server = app.listen(PORT, () => {
   console.log('Mini API Gateway started');
   console.log(`Server running on http://localhost:${PORT}`);
