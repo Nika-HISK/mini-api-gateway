@@ -173,7 +173,6 @@ const proxyOptions = {
     }
   },
   onProxyReq: (proxyReq, req, res) => {
-    // Strip route prefix from path
     let newPath = req.path;
     for (const [route] of Object.entries(config)) {
       if (req.path.startsWith(route)) {
