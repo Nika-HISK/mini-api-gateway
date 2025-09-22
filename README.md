@@ -582,5 +582,3 @@ npm test            # Start mock backends
 ### Key Files
 - `server.js` - Main gateway server
 - `config.json` - Route configuration
-- `package.json` - Dependencies and scripts
-- `test-backends.js` - Mock services for testing
