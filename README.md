@@ -577,7 +577,3 @@ npm test            # Start mock backends
 - Mock Orders Service: `5002`
 - Mock Products Service: `5003`
 - Mock Auth Service: `5004`
-
-### Key Files
-- `server.js` - Main gateway server
-- `config.json` - Route configuration
