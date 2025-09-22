@@ -16,8 +16,7 @@ A lightweight, production-ready API Gateway built with Node.js and Express. This
 - [Security](#security)
 - [Performance](#performance)
 - [Deployment](#deployment)
-- [Contributing](#contributing)
-- [License](#license)
+
 
 ## Features
 
