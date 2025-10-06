@@ -549,11 +549,6 @@ The gateway provides comprehensive error handling:
 
 ### Development Guidelines
 
-- Follow existing code style and formatting
-- Add comprehensive error handling
-- Include appropriate logging
-- Write clear commit messages
-- Update documentation for new features
 
 ## License
 
