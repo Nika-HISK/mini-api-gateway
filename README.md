@@ -547,9 +547,6 @@ The gateway provides comprehensive error handling:
 6. Push to the branch (`git push origin feature/amazing-feature`)
 7. Open a Pull Request
 
-### Development Guidelines
-
-
 ## License
 
 MIT License - see the [LICENSE](LICENSE) file for details.
